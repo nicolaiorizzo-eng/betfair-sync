@@ -20,11 +20,6 @@ DAYS_TO_FETCH      = int(os.environ.get("DAYS_TO_FETCH", "3")) # default 3 days,
 
 
 def betfair_login(username, password, app_key):
-    """
-    Non-interactive Betfair login — no manual token needed.
-    Uses the Identity SSO API to exchange username/password for a session token.
-    Session tokens are valid for ~8 hours; we get a fresh one every run.
-    """
     url = "https://identitysso.betfair.com/api/login"
     headers = {
         "X-Application": app_key,
@@ -32,8 +27,11 @@ def betfair_login(username, password, app_key):
     }
     payload = {"username": username, "password": password}
 
-    response = requests.post(url, data=payload, headers=headers).json()
+    raw = requests.post(url, data=payload, headers=headers)
+    print(f"Betfair login status code: {raw.status_code}")
+    print(f"Betfair login response: {raw.text}")
 
+    response = raw.json()
     if response.get("status") != "SUCCESS":
         raise RuntimeError(f"Betfair login failed: {response.get('error', 'Unknown error')}")
 
