@@ -1,11 +1,8 @@
 name: Betfair Daily Sync
 
 on:
-  # Runs every day at 08:00 UTC — change the time to suit you
   schedule:
     - cron: "0 8 * * *"
-
-  # Also lets you trigger it manually from the GitHub Actions tab
   workflow_dispatch:
 
 jobs:
@@ -26,10 +23,10 @@ jobs:
 
       - name: Run sync
         env:
-          BETFAIR_APP_KEY:          ${{ secrets.BETFAIR_APP_KEY }}
-          BETFAIR_USERNAME:         ${{ secrets.BETFAIR_USERNAME }}
-          BETFAIR_PASSWORD:         ${{ secrets.BETFAIR_PASSWORD }}
-          GOOGLE_SHEET_NAME:        ${{ secrets.GOOGLE_SHEET_NAME }}
-          GOOGLE_CREDENTIALS_JSON:  ${{ secrets.GOOGLE_CREDENTIALS_JSON }}
-          DAYS_TO_FETCH:            "2"   # fetch last 2 days each run (covers any timezone overlap)
+          BETFAIR_APP_KEY:         ${{ secrets.BETFAIR_APP_KEY }}
+          BETFAIR_USERNAME:        ${{ secrets.BETFAIR_USERNAME }}
+          BETFAIR_PASSWORD:        ${{ secrets.BETFAIR_PASSWORD }}
+          GOOGLE_SHEET_NAME:       ${{ secrets.GOOGLE_SHEET_NAME }}
+          GOOGLE_CREDENTIALS_JSON: ${{ secrets.GOOGLE_CREDENTIALS_JSON }}
+          DAYS_TO_FETCH:           "2"
         run: python sync_engine.py
