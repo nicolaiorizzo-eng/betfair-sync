@@ -134,11 +134,11 @@ st.markdown("""
   button[aria-label*="⚪"] {
     background: linear-gradient(135deg, #ffffff, #f1f3f7) !important;
     border: 1.5px solid #cbd5e1 !important; 
-    color: #475569 !important; /* Enhanced high-contrast slate text */
+    color: #475569 !important;
     box-shadow: 0 1px 3px rgba(0,0,0,0.02) !important;
   }
   button[aria-label*="⚪"] div[data-testid="stMarkdownContainer"] p {
-    color: #475569 !important; /* Force internal paragraph color */
+    color: #475569 !important;
   }
   button[aria-label*="⚪"]:hover {
     transform: translateY(-2px) !important;
@@ -272,13 +272,23 @@ def compute_max_drawdown(pnl_series):
 
 def plotly_card(title, fig, height=270):
     st.markdown(f'<div class="card"><div class="card-title">{title}</div>', unsafe_allow_html=True)
-    fig.update_layout(height=height, margin=dict(l=0,r=0,t=4,b=0),
-        plot_bgcolor='#ffffff', paper_bgcolor='#ffffff',
-        xaxis=dict(showgrid=False,linecolor='#eee'),
-        yaxis=dict(gridcolor='#f0f0f0',linecolor='#eee'))
+    fig.update_layout(height=height, margin=dict(l=0,r=0,t=4,b=0), plot_bgcolor='#ffffff', paper_bgcolor='#ffffff', xaxis=dict(showgrid=False,linecolor='#eee'), yaxis=dict(gridcolor='#f0f0f0',linecolor='#eee'))
     st.plotly_chart(fig, use_container_width=True)
     st.markdown('</div>', unsafe_allow_html=True)
 
 def metric_card(col, label, value, cls="neu", sub=""):
-    sub_html=f'<div class="metric-sub">{sub}</div>' if sub else ''
-    col.markdown(f'<div class="metric-card"><div
+    sub_html = f'<div class="metric-sub">{sub}</div>' if sub else ''
+    col.markdown(f'<div class="metric-card"><div class="metric-label">{label}</div><div class="metric-value {cls}">{value}</div>{sub_html}</div>', unsafe_allow_html=True)
+
+def stat_item(label, value, color="#1a1a2e"):
+    return f'<div class="stat-item"><div class="stat-item-label">{label}</div><div class="stat-item-value" style="color:{color}">{value}</div></div>'
+
+# ── sidebar ────────────────────────────────────────────────────────────────────
+with st.sidebar:
+    st.markdown("## 📈 Betfair Dashboard")
+    st.markdown("---")
+    uploaded=st.file_uploader("Upload ExchangeBets_Settled.csv", type="csv")
+    if uploaded:
+        raw_df=pd.read_csv(uploaded)
+        st.success(f"✅ {len(raw_df)} rows loaded")
+        if
