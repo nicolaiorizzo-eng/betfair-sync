@@ -9,14 +9,12 @@ import plotly.graph_objects as go
 
 st.set_page_config(page_title="Betfair Trading Dashboard", page_icon="📈", layout="wide", initial_sidebar_state="expanded")
 
-# ── BETFAIR EXCHANGE ORIGINAL DARK THEME STYLING ──
+# ── BETFAIR THEME LAYOUT STYLING ──
 st.markdown("""
 <style>
-  /* Main app container background */
   .stApp { background-color: #0a111c !important; color: #f2f6fc !important; }
   body { background-color: #0a111c; color: #f2f6fc; }
 
-  /* Metric cards top summary */
   .metric-card {
     background: #111b29;
     border-radius: 8px;
@@ -34,7 +32,6 @@ st.markdown("""
   .metric-value { font-size: 18px; font-weight: 800; line-height: 1.1; }
   .metric-sub   { font-size: 10px; color: #526375; margin-top: 3px; }
 
-  /* Main platform layout cards */
   .card {
     background: #111b29;
     border-radius: 10px;
@@ -46,7 +43,7 @@ st.markdown("""
   .card-title {
     font-size: 11px;
     font-weight: 800;
-    color: #ffb800; /* Betfair Gold Accent */
+    color: #ffb800; 
     text-transform: uppercase;
     letter-spacing: 0.6px;
     margin-bottom: 12px;
@@ -59,21 +56,18 @@ st.markdown("""
   .stat-item-label { font-size: 10px; color: #7e8e9f; font-weight: 600; text-transform: uppercase; margin-bottom: 3px; }
   .stat-item-value { font-size: 15px; font-weight: 800; color: #f2f6fc; }
 
-  /* P&L Performance Colors */
   .pos { color: #2bf0a2 !important; } 
   .neg { color: #ff5252 !important; } 
   .neu { color: #f2f6fc !important; }
 
-  /* Left navigation sidebar panel */
   section[data-testid="stSidebar"] { background: #070c14 !important; border-right: 1px solid #1a2a3e; }
   section[data-testid="stSidebar"] * { color: #cbd5e1 !important; }
 
-  /* Settled trade rows */
   .bet-row { border-radius: 6px; padding: 8px 10px; margin-bottom: 5px; font-size: 12px; border-left: 3px solid #334155; }
   .bet-row.win  { background: #0c251c; border-left-color: #2bf0a2; }
   .bet-row.loss { background: #2e1418; border-left-color: #ff5252; }
 
-  /* ── HOOKED CALENDAR GRID STYLE SYSTEM ── */
+  /* ── CLEAN ICON-HOOKED CALENDAR LAYOUT ── */
   button[aria-label*="🟢"], button[aria-label*="🔴"], button[aria-label*="⚪"] {
     min-height: 85px !important; 
     height: 85px !important;
@@ -81,12 +75,9 @@ st.markdown("""
     padding: 6px 10px !important; 
     width: 100% !important;
     transition: transform 0.1s ease, box-shadow 0.1s ease !important;
-    position: relative !important;
-    display: block !important;
-    background: #0b121d !important;
   }
 
-  /* Structural block text container */
+  /* Align inner paragraph blocks */
   button[aria-label*="🟢"] div[data-testid="stMarkdownContainer"] p,
   button[aria-label*="🔴"] div[data-testid="stMarkdownContainer"] p,
   button[aria-label*="⚪"] div[data-testid="stMarkdownContainer"] p {
@@ -96,69 +87,60 @@ st.markdown("""
     width: 100% !important;
     margin: 0 !important;
     padding: 0 !important;
-    justify-content: center !important;
-    align-items: center !important;
-  }
-
-  /* Clear day number isolation locked to top-left */
-  .cal-day-num {
-    font-size: 11px !important;
-    font-weight: 700 !important;
-    position: absolute !important;
-    top: 6px !important;
-    left: 8px !important;
-    color: #62778e !important;
-  }
-
-  /* Centered P&L execution container */
-  .cal-pnl-val {
+    text-align: center !important;
     font-size: 14px !important;
     font-weight: 800 !important;
-    text-align: center !important;
-    margin-top: 12px !important;
+    line-height: 1.3 !important;
   }
 
-  /* Bottom indicator dot asset */
-  .cal-dot-icon {
-    font-size: 9px !important;
-    margin-top: 5px !important;
+  /* Pull first line item to the top left position cleanly */
+  button[aria-label*="🟢"] div[data-testid="stMarkdownContainer"] p::first-line,
+  button[aria-label*="🔴"] div[data-testid="stMarkdownContainer"] p::first-line,
+  button[aria-label*="⚪"] div[data-testid="stMarkdownContainer"] p::first-line {
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    color: #62778e !important;
+    float: left !important;
+    text-align: left !important;
+    display: block !important;
+    width: 100% !important;
   }
 
-  /* Green Days (Profit Settlement) */
+  /* Green Days */
   button[aria-label*="🟢"] {
     border: 1.5px solid #1ba872 !important;
     background: linear-gradient(135deg, #0f291f, #07140f) !important;
+    color: #2bf0a2 !important;
   }
-  button[aria-label*="🟢"] .cal-pnl-val { color: #2bf0a2 !important; }
   button[aria-label*="🟢"]:hover {
     transform: translateY(-2px) !important;
     box-shadow: 0 4px 12px rgba(43, 240, 162, 0.25) !important;
   }
 
-  /* Red Days (Loss Settlement) */
+  /* Red Days */
   button[aria-label*="🔴"] {
     border: 1.5px solid #cc3341 !important;
     background: linear-gradient(135deg, #2a1216, #16080a) !important;
+    color: #ff5252 !important;
   }
-  button[aria-label*="🔴"] .cal-pnl-val { color: #ff5252 !important; }
   button[aria-label*="🔴"]:hover {
     transform: translateY(-2px) !important;
     box-shadow: 0 4px 12px rgba(255, 82, 82, 0.25) !important;
   }
 
-  /* White Days (Empty/Idle Marketplace) */
+  /* White Days */
   button[aria-label*="⚪"] {
     border: 1.5px solid #1a2a3e !important;
     background: #0b121d !important;
+    color: #3b4e63 !important;
   }
-  button[aria-label*="⚪"] .cal-pnl-val { color: #3b4e63 !important; }
   button[aria-label*="⚪"]:hover {
     transform: translateY(-2px) !important;
     border-color: #2d435f !important;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4) !important;
   }
 
-  /* ── ACTIVE CONTAINER SELECTION INDICATOR ── */
+  /* Active Border Selection Ring */
   button[aria-label*="🟢"][data-testid="baseButton-primary"],
   button[aria-label*="🔴"][data-testid="baseButton-primary"],
   button[aria-label*="⚪"][data-testid="baseButton-primary"] {
@@ -468,14 +450,14 @@ with col_cal:
                         sign = '+' if pnl >= 0 else '-'
                         formatted_pnl = f"{sign}£{int(abs(pnl))}"
                         
-                        # Structured label block to align components seamlessly
-                        lbl = f"<span class='cal-day-num'>{dn}</span><span class='cal-pnl-val'>{formatted_pnl}</span><span class='cal-dot-icon'>{dot}</span>"
+                        # Clean Markdown construction: Day Number (Line 1) gets floated left by CSS ::first-line
+                        lbl = f"{dn}\n\n{formatted_pnl}\n\n{dot}"
                         
                         if st.button(lbl, key=f'cal_{dk}', use_container_width=True, type=btn_type):
                             st.session_state.selected_day = dk if not is_sel else None
                             st.rerun()
                     else:
-                        lbl = f"<span class='cal-day-num'>{dn}</span><span class='cal-pnl-val'>—</span><span class='cal-dot-icon'>⚪</span>"
+                        lbl = f"{dn}\n\n—\n\n⚪"
                         
                         if st.button(lbl, key=f'cal_{dk}', use_container_width=True, type=btn_type):
                             st.session_state.selected_day = dk if not is_sel else None
