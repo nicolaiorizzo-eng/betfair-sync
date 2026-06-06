@@ -9,14 +9,14 @@ import plotly.graph_objects as go
 
 st.set_page_config(page_title="Betfair Trading Dashboard", page_icon="📈", layout="wide", initial_sidebar_state="expanded")
 
-# ── BETFAIR ORIGINAL HIGH-CONTRAST THEME STYLING ──
+# ── BETFAIR DARK HARMONY EXCLUSIVE STYLING ──
 st.markdown("""
 <style>
-  /* Main app container background */
+  /* Base platform container adjustments */
   .stApp { background-color: #0a111c !important; color: #f2f6fc !important; }
   body { background-color: #0a111c; color: #f2f6fc; }
 
-  /* Metric cards top summary */
+  /* Summary cards top layer */
   .metric-card {
     background: #111b29;
     border-radius: 8px;
@@ -34,7 +34,7 @@ st.markdown("""
   .metric-value { font-size: 18px; font-weight: 800; line-height: 1.1; }
   .metric-sub   { font-size: 10px; color: #526375; margin-top: 3px; }
 
-  /* Main platform layout cards */
+  /* Modular block panels */
   .card {
     background: #111b29;
     border-radius: 10px;
@@ -59,35 +59,29 @@ st.markdown("""
   .stat-item-label { font-size: 10px; color: #7e8e9f; font-weight: 600; text-transform: uppercase; margin-bottom: 3px; }
   .stat-item-value { font-size: 15px; font-weight: 800; color: #f2f6fc; }
 
-  /* P&L Performance Colors */
   .pos { color: #2bf0a2 !important; } 
   .neg { color: #ff5252 !important; } 
   .neu { color: #f2f6fc !important; }
 
-  /* Left navigation sidebar panel */
   section[data-testid="stSidebar"] { background: #070c14 !important; border-right: 1px solid #1a2a3e; }
   section[data-testid="stSidebar"] * { color: #cbd5e1 !important; }
 
-  /* Settled trade rows */
   .bet-row { border-radius: 6px; padding: 8px 10px; margin-bottom: 5px; font-size: 12px; border-left: 3px solid #334155; }
   .bet-row.win  { background: #0c251c; border-left-color: #2bf0a2; }
   .bet-row.loss { background: #2e1418; border-left-color: #ff5252; }
 
-  /* ── SOLID CALENDAR BACKGROUND FORCE OVERRIDES ── */
-  button[aria-label*="🟢"], button[aria-label*="🔴"], button[aria-label*="⚪"] {
-    min-height: 85px !important; 
+  /* ── IMMUTABLE ANCHORED GRID CSS SYSTEM ── */
+  div[data-testid="stHorizontalBlock"] button {
+    min-height: 85px !important;
     height: 85px !important;
-    border-radius: 8px !important; 
-    padding: 6px 10px !important; 
+    border-radius: 8px !important;
+    padding: 6px 10px !important;
     width: 100% !important;
-    transition: transform 0.1s ease, box-shadow 0.1s ease !important;
     display: block !important;
   }
 
-  /* Internal text structures */
-  button[aria-label*="🟢"] div[data-testid="stMarkdownContainer"] p,
-  button[aria-label*="🔴"] div[data-testid="stMarkdownContainer"] p,
-  button[aria-label*="⚪"] div[data-testid="stMarkdownContainer"] p {
+  /* Structural paragraphs child element override rules */
+  div[data-testid="stHorizontalBlock"] button div[data-testid="stMarkdownContainer"] p {
     display: flex !important;
     flex-direction: column !important;
     height: 100% !important;
@@ -100,10 +94,8 @@ st.markdown("""
     line-height: 1.3 !important;
   }
 
-  /* Force top-left execution on the day number string segment */
-  button[aria-label*="🟢"] div[data-testid="stMarkdownContainer"] p::first-line,
-  button[aria-label*="🔴"] div[data-testid="stMarkdownContainer"] p::first-line,
-  button[aria-label*="⚪"] div[data-testid="stMarkdownContainer"] p::first-line {
+  /* Lock first text item baseline to the top left margin zone */
+  div[data-testid="stHorizontalBlock"] button div[data-testid="stMarkdownContainer"] p::first-line {
     font-size: 11px !important;
     font-weight: 700 !important;
     color: #62778e !important;
@@ -113,51 +105,49 @@ st.markdown("""
     width: 100% !important;
   }
 
-  /* Force Green Profile Background (Active Profit) */
-  button[aria-label*="🟢"] {
+  /* Deep Anchor Profit Days Background (🟢) */
+  div[data-testid="stHorizontalBlock"] button[aria-label*="🟢"] {
     background-color: #0c251c !important;
     background: linear-gradient(135deg, #0f291f, #07140f) !important;
     border: 1.5px solid #1ba872 !important;
     color: #2bf0a2 !important;
   }
-  button[aria-label*="🟢"]:hover {
+  div[data-testid="stHorizontalBlock"] button[aria-label*="🟢"]:hover {
     transform: translateY(-2px) !important;
-    box-shadow: 0 4px 12px rgba(43, 240, 162, 0.25) !important;
+    box-shadow: 0 4px 12px rgba(43, 240, 162, 0.3) !important;
   }
 
-  /* Force Red Profile Background (Active Loss) */
-  button[aria-label*="🔴"] {
+  /* Deep Anchor Loss Days Background (🔴) */
+  div[data-testid="stHorizontalBlock"] button[aria-label*="🔴"] {
     background-color: #2e1418 !important;
     background: linear-gradient(135deg, #2a1216, #16080a) !important;
     border: 1.5px solid #cc3341 !important;
     color: #ff5252 !important;
   }
-  button[aria-label*="🔴"]:hover {
+  div[data-testid="stHorizontalBlock"] button[aria-label*="🔴"]:hover {
     transform: translateY(-2px) !important;
-    box-shadow: 0 4px 12px rgba(255, 82, 82, 0.25) !important;
+    box-shadow: 0 4px 12px rgba(255, 82, 82, 0.3) !important;
   }
 
-  /* Force Graphite Slate Background (Empty Days) */
-  button[aria-label*="⚪"] {
+  /* Deep Anchor Idle Marketplace Background (⚪) */
+  div[data-testid="stHorizontalBlock"] button[aria-label*="⚪"] {
     background-color: #0b121d !important;
     background: #0b121d !important;
     border: 1.5px solid #1a2a3e !important;
     color: #3b4e63 !important;
   }
-  button[aria-label*="⚪"]:hover {
+  div[data-testid="stHorizontalBlock"] button[aria-label*="⚪"]:hover {
     transform: translateY(-2px) !important;
     border-color: #2d435f !important;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4) !important;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5) !important;
   }
 
-  /* Active Container Selection Ring Override */
-  button[aria-label*="🟢"][data-testid="baseButton-primary"],
-  button[aria-label*="🔴"][data-testid="baseButton-primary"],
-  button[aria-label*="⚪"][data-testid="baseButton-primary"] {
+  /* Absolute Primary Selection Framing System */
+  div[data-testid="stHorizontalBlock"] button[data-testid="baseButton-primary"] {
     border: 2px solid #ffb800 !important;
     outline: 2px solid #ffb800 !important;
     outline-offset: 1px !important;
-    box-shadow: 0 0 12px rgba(255, 184, 0, 0.5) !important;
+    box-shadow: 0 0 14px rgba(255, 184, 0, 0.6) !important;
     transform: translateY(-1px) !important;
   }
 </style>
@@ -503,68 +493,4 @@ with col_detail:
                 </div>
                 <div style="text-align:center;background:#111b29;border-radius:8px;padding:8px;border:1px solid #1a2a3e">
                   <div style="font-size:9px;color:#7e8e9f;font-weight:700;text-transform:uppercase">ROI</div>
-                  <div style="font-weight:800;font-size:18px;color:{dc}">{droi:+.1f}%</div>
-                </div>
-              </div>
-            </div>''', unsafe_allow_html=True)
-            for _, bet in ddf.iterrows():
-                pc  = "#2bf0a2" if bet['P/L']>=0 else "#ff5252"
-                bg  = "#0c251c" if bet['P/L']>=0 else "#2e1418"
-                brd = "#2bf0a2" if bet['P/L']>=0 else "#ff5252"
-                st.markdown(f'''<div style="background:{bg};border-left:3px solid {brd};border-radius:7px; padding:9px 11px;margin-bottom:6px">
-                  <div style="font-weight:700;font-size:12px;color:#f2f6fc">{bet["Event"]}</div>
-                  <div style="color:#7e8e9f;font-size:11px;margin-top:2px">{bet["Market"]} · {bet["Selection"]} · {bet["Type"]} @ {bet["Avg Odds"]:.2f}</div>
-                  <div style="display:flex;justify-content:space-between;margin-top:5px;align-items:center">
-                    <span style="font-size:11px;color:#526375">Liability: £{bet["Liability"]:.2f}</span>
-                    <span style="font-weight:800;font-size:13px;color:{pc}">{"+"if bet["P/L"]>=0 else ""}£{bet["P/L"]:.2f}</span>
-                  </div>
-                </div>''', unsafe_allow_html=True)
-        else:
-            st.markdown(f'''<div style="background:#0b121d;border-radius:8px;padding:14px;margin-bottom:10px;border:1px solid #1a2a3e">
-              <div style="font-size:11px;color:#7e8e9f;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px">{sel_date.strftime('%A, %d %B %Y')}</div>
-              <div style="font-size:24px;font-weight:800;color:#526375;margin-bottom:4px">£0.00</div>
-              <div style="font-size:12px;color:#526375">No market settlements on this date.</div>
-            </div>''', unsafe_allow_html=True)
-    st.markdown('</div>', unsafe_allow_html=True)
-
-st.markdown("<br>", unsafe_allow_html=True)
-
-# ── market + day of week ───────────────────────────────────────────────────────
-r3c1,r3c2=st.columns(2)
-with r3c1:
-    ms=filtered.groupby('Market').agg(PnL=('P/L','sum'),Bets=('BetID','count')).reset_index().sort_values('PnL')
-    fig3=go.Figure(go.Bar(x=ms['PnL'],y=ms['Market'],orientation='h', marker_color=['#2bf0a2' if v>=0 else '#ff5252' for v in ms['PnL']], hovertemplate='<b>%{y}</b><br>P&L: £%{x:.2f}<extra></extra>'))
-    fig3.update_layout(yaxis=dict(showgrid=False),xaxis=dict(tickprefix='£'), font=dict(color='#cbd5e1'))
-    plotly_card("🏷️ P&L by Market Type", fig3, 270)
-
-with r3c2:
-    today=datetime.now().replace(hour=0,minute=0,second=0,microsecond=0)
-    ws=today-timedelta(days=today.weekday())
-    we=ws+timedelta(days=7)
-    tw=filtered[(filtered['Date']>=ws)&(filtered['Date']<we)]
-    dow_order=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday']
-    if not tw.empty:
-        dp=tw.groupby('DayOfWeek')['P/L'].sum().reindex(dow_order).fillna(0)
-        wt=tw['P/L'].sum()
-        cap=f"Week {ws.strftime('%d %b')} – {(we-timedelta(days=1)).strftime('%d %b %Y')} · Total: {'+'if wt>=0 else ''}£{wt:.2f}"
-    else:
-        dp=filtered.groupby('DayOfWeek')['P/L'].sum().reindex(dow_order).fillna(0)
-        cap="No bets this week — showing all-time by day of week"
-    fig4=go.Figure(go.Bar(x=dp.index,y=dp.values, marker_color=['#2bf0a2' if v>=0 else '#ff5252' for v in dp.values], hovertemplate='%{x}<br>P&L: £%{y:.2f}<extra></extra>'))
-    fig4.add_hline(y=0,line_dash="dash",line_color="#1a2a3e",line_width=1)
-    fig4.update_layout(xaxis=dict(showgrid=False),yaxis=dict(tickprefix='£'), font=dict(color='#cbd5e1'))
-    plotly_card("📆 P&L by Day of Week — This Week", fig4, 260)
-    st.caption(cap)
-
-st.markdown("<br>", unsafe_allow_html=True)
-
-# ── all bets table ─────────────────────────────────────────────────────────────
-st.markdown('<div class="card"><div class="card-title">📋 All Bets</div>', unsafe_allow_html=True)
-tdf=filtered[['DateStr','Event','Market','Selection','Type','Avg Odds','Liability','P/L','ROI','Outcome']].copy()
-tdf=tdf.sort_values('DateStr',ascending=False)
-tdf['Liability']=tdf['Liability'].apply(lambda x:f"£{x:.2f}")
-tdf['P/L']=tdf['P/L'].apply(lambda x:f"+£{x:.2f}" if x>=0 else f"-£{abs(x):.2f}")
-tdf['ROI']=tdf['ROI'].apply(lambda x:f"{x:+.1f}%")
-tdf.columns=['Date','Event','Market','Selection','Type','Odds','Liability','P/L','ROI','Outcome']
-st.dataframe(tdf,use_container_width=True,hide_index=True)
-st.markdown('</div>', unsafe_allow_html=True)
+                  <div style="font-weight:800;font-size:18
