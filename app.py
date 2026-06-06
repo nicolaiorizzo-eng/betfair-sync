@@ -56,56 +56,112 @@ st.markdown("""
 
   .pos { color:#0F6E56; } .neg { color:#C0392B; } .neu { color:#1a1a2e; }
 
-  /* Calendar day buttons */
-  div[data-testid="stButton"] button {
-    width:100% !important;
-    border-radius:7px !important;
-    min-height:56px !important;
-    padding:4px 2px !important;
-    font-size:11px !important;
-    font-weight:800 !important;
-    border:1.5px solid #eee !important;
-    background:#fafafa !important;
-    color:#ddd !important;
-    box-shadow:none !important;
-    line-height:1.3 !important;
-  }
-  .win-btn button {
-    background:linear-gradient(135deg,#d4f5e9,#a8ead0) !important;
-    border-color:#5fcca8 !important;
-    color:#0F6E56 !important;
-    box-shadow:0 2px 5px rgba(95,204,168,0.25) !important;
-  }
-  .win-btn button:hover {
-    transform:translateY(-2px);
-    box-shadow:0 4px 10px rgba(95,204,168,0.35) !important;
-  }
-  .loss-btn button {
-    background:linear-gradient(135deg,#fde8e4,#f9c4bb) !important;
-    border-color:#e8836c !important;
-    color:#C0392B !important;
-    box-shadow:0 2px 5px rgba(232,131,108,0.25) !important;
-  }
-  .loss-btn button:hover {
-    transform:translateY(-2px);
-    box-shadow:0 4px 10px rgba(232,131,108,0.35) !important;
-  }
-  .selected-btn button {
-    outline:2.5px solid #1D9E75 !important;
-    outline-offset:1px !important;
-    box-shadow:0 4px 12px rgba(0,0,0,0.2) !important;
-  }
-  .selected-loss-btn button {
-    outline:2.5px solid #C0392B !important;
-    outline-offset:1px !important;
-  }
-
   .bet-row { border-radius:7px; padding:8px 10px; margin-bottom:5px; font-size:12px; border-left:3px solid #ccc; }
   .bet-row.win  { background:#f0faf5; border-left-color:#0F6E56; }
   .bet-row.loss { background:#fdf0ee; border-left-color:#C0392B; }
 
   section[data-testid="stSidebar"] { background:#1a1a2e !important; }
   section[data-testid="stSidebar"] * { color:#eee !important; }
+
+  /* ── UNIFORM CALENDAR BUTTON STYLING ── */
+  button[aria-label*="🟢"], button[aria-label*="🔴"], button[aria-label*="⚪"] {
+    min-height:85px !important; 
+    height:85px !important;
+    border-radius:12px !important; 
+    padding:8px 10px !important; 
+    width:100% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    align-items: flex-start !important;
+    transition: transform 0.1s, box-shadow 0.1s !important;
+    border: 1.5px solid transparent !important;
+  }
+
+  /* Target internal container for layout control */
+  button[aria-label*="🟢"] div[data-testid="stMarkdownContainer"] p,
+  button[aria-label*="🔴"] div[data-testid="stMarkdownContainer"] p,
+  button[aria-label*="⚪"] div[data-testid="stMarkdownContainer"] p {
+    display: flex !important;
+    flex-direction: column !important;
+    height: 100% !important;
+    width: 100% !important;
+    text-align: left !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* Style for Day Number (Top Left) */
+  .cal-day-num {
+    font-size: 11px !important;
+    font-weight: 700 !important;
+    align-self: flex-start !important;
+  }
+
+  /* Style for P&L Value (Centered) */
+  .cal-pnl-val {
+    font-size: 13px !important;
+    font-weight: 800 !important;
+    align-self: center !important;
+    margin-top: auto !important;
+    margin-bottom: auto !important;
+    text-align: center !important;
+  }
+
+  /* Green Days (Profit) */
+  button[aria-label*="🟢"] {
+    background: linear-gradient(135deg, #d4f5e9, #a8ead0) !important;
+    border: 1.5px solid #5fcca8 !important; 
+    color: #0F6E56 !important;
+    box-shadow: 0 2px 6px rgba(95,204,168,0.25) !important;
+  }
+  button[aria-label*="🟢"]:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 5px 12px rgba(95,204,168,0.4) !important;
+  }
+
+  /* Red Days (Loss) */
+  button[aria-label*="🔴"] {
+    background: linear-gradient(135deg, #fde8e4, #f9c4bb) !important;
+    border: 1.5px solid #e8836c !important; 
+    color: #C0392B !important;
+    box-shadow: 0 2px 6px rgba(232,131,108,0.25) !important;
+  }
+  button[aria-label*="🔴"]:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 5px 12px rgba(232,131,108,0.4) !important;
+  }
+
+  /* White Days (Empty/No Trades) */
+  button[aria-label*="⚪"] {
+    background: linear-gradient(135deg, #ffffff, #f6f7f9) !important;
+    border: 1.5px solid #e4e7ec !important; 
+    color: #a0aec0 !important;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.02) !important;
+  }
+  button[aria-label*="⚪"]:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.08) !important;
+    border-color: #cbd5e1 !important;
+  }
+
+  /* Primary State Overrides (When Selected) */
+  button[aria-label*="🟢"][data-testid="baseButton-primary"] {
+    background: linear-gradient(135deg, #a8ead0, #5fcca8) !important;
+    border: 2px solid #0F6E56 !important;
+    outline: 2.5px solid #0F6E56 !important; outline-offset: 1px !important;
+  }
+  button[aria-label*="🔴"][data-testid="baseButton-primary"] {
+    background: linear-gradient(135deg, #f9c4bb, #e8836c) !important;
+    border: 2px solid #C0392B !important;
+    outline: 2.5px solid #C0392B !important; outline-offset: 1px !important;
+  }
+  button[aria-label*="⚪"][data-testid="baseButton-primary"] {
+    background: linear-gradient(135deg, #e4e7ec, #cbd5e1) !important;
+    border: 2px solid #718096 !important;
+    outline: 2.5px solid #718096 !important; outline-offset: 1px !important;
+    color: #4a5568 !important;
+  }
 </style>
 """, unsafe_allow_html=True)
 
@@ -274,7 +330,7 @@ if filtered.empty: st.warning("No data matches your filters."); st.stop()
 total_bets  = len(filtered)
 total_liab  = filtered['Liability'].sum()
 total_pnl   = filtered['P/L'].sum()
-avg_roi     = (total_pnl / total_liab * 100) if total_liab > 0 else 0  # actual ROI = total P/L / total liability
+avg_roi     = (total_pnl / total_liab * 100) if total_liab > 0 else 0 
 wins_df     = filtered[filtered['Outcome']=='WIN']
 losses_df   = filtered[filtered['Outcome']=='LOSS']
 strike_rate = len(wins_df)/total_bets*100 if total_bets>0 else 0
@@ -389,9 +445,7 @@ with col_cal:
     cal_year,cal_mon=int(cal_month.split('-')[0]),int(cal_month.split('-')[1])
     mdata=filtered[(filtered['Date'].dt.year==cal_year)&(filtered['Date'].dt.month==cal_mon)]
     day_pnl_map  = mdata.groupby(mdata['Date'].dt.day)['P/L'].sum().to_dict()
-    day_bets_map = mdata.groupby(mdata['Date'].dt.day)['BetID'].count().to_dict()
 
-    # Calendar — emoji prefix as reliable CSS selector hook
     first_dow     = calendar.monthrange(cal_year, cal_mon)[0]
     days_in_month = calendar.monthrange(cal_year, cal_mon)[1]
 
@@ -400,45 +454,6 @@ with col_cal:
         ''.join([f'<div style="text-align:center;font-size:10px;font-weight:700;color:#bbb;text-transform:uppercase;padding:2px 0">{d}</div>'
                   for d in ['Mon','Tue','Wed','Thu','Fri','Sat','Sun']]) +
         '</div>', unsafe_allow_html=True)
-
-    st.markdown("""<style>
-      button[aria-label$="\U0001f7e2"], button[aria-label$="\U0001f534"] {
-        min-height:80px !important; height:80px !important;
-        border-radius:12px !important; font-size:11px !important;
-        font-weight:700 !important; text-align:left !important;
-        padding:8px 10px !important; white-space:pre-line !important;
-        line-height:1.4 !important; width:100% !important;
-        transition:transform 0.1s,box-shadow 0.1s !important;
-      }
-      button[aria-label$="\U0001f7e2"] {
-        background:linear-gradient(135deg,#d4f5e9,#a8ead0) !important;
-        border:1.5px solid #5fcca8 !important; color:#0F6E56 !important;
-        box-shadow:0 2px 8px rgba(95,204,168,0.30) !important;
-      }
-      button[aria-label$="\U0001f7e2"]:hover {
-        transform:translateY(-2px) !important;
-        box-shadow:0 5px 14px rgba(95,204,168,0.45) !important;
-      }
-      button[aria-label$="\U0001f534"] {
-        background:linear-gradient(135deg,#fde8e4,#f9c4bb) !important;
-        border:1.5px solid #e8836c !important; color:#C0392B !important;
-        box-shadow:0 2px 8px rgba(232,131,108,0.30) !important;
-      }
-      button[aria-label$="\U0001f534"]:hover {
-        transform:translateY(-2px) !important;
-        box-shadow:0 5px 14px rgba(232,131,108,0.45) !important;
-      }
-      button[aria-label$="\U0001f7e2"][data-testid="baseButton-primary"] {
-        background:linear-gradient(135deg,#a8ead0,#5fcca8) !important;
-        border:2px solid #0F6E56 !important;
-        outline:2.5px solid #0F6E56 !important; outline-offset:2px !important;
-      }
-      button[aria-label$="\U0001f534"][data-testid="baseButton-primary"] {
-        background:linear-gradient(135deg,#f9c4bb,#e8836c) !important;
-        border:2px solid #C0392B !important;
-        outline:2.5px solid #C0392B !important; outline-offset:2px !important;
-      }
-    </style>""", unsafe_allow_html=True)
 
     all_days = [None] * first_dow + list(range(1, days_in_month+1))
     while len(all_days) % 7 != 0:
@@ -450,35 +465,40 @@ with col_cal:
         for ci, dn in enumerate(row):
             with cols[ci]:
                 if dn is None:
-                    st.markdown('<div style="height:82px"></div>', unsafe_allow_html=True)
+                    st.markdown('<div style="height:85px"></div>', unsafe_allow_html=True)
                 else:
                     pnl = day_pnl_map.get(dn, None)
                     dk  = f"{cal_year}-{str(cal_mon).zfill(2)}-{str(dn).zfill(2)}"
                     is_sel = (st.session_state.selected_day == dk)
+                    btn_type = 'primary' if is_sel else 'secondary'
+                    
                     if pnl is not None:
-                        dot  = '\U0001f7e2' if pnl >= 0 else '\U0001f534'
+                        # Day has data (🟢 or 🔴 determines background style hook via aria-label)
+                        dot = '🟢' if pnl >= 0 else '🔴'
                         sign = '+' if pnl >= 0 else '-'
-                        # Emoji at START (CSS hook via aria-label^=), day number line 2, P&L line 3
-                        lbl  = str(dn) + '\n' + sign + '\u00a3' + str(int(abs(pnl))) + '\n' + dot
-                        btn_type = 'primary' if is_sel else 'secondary'
+                        formatted_pnl = f"{sign}£{int(abs(pnl))}"
+                        
+                        # Structured label template used by CSS for positioning
+                        lbl = f"<span class='cal-day-num'>{dn}</span><span class='cal-pnl-val'>{formatted_pnl}</span> {dot}"
+                        
                         if st.button(lbl, key=f'cal_{dk}', use_container_width=True, type=btn_type):
                             st.session_state.selected_day = dk if not is_sel else None
                             st.rerun()
                     else:
-                        day_html = ('<div style="height:80px;border:1px solid #eee;border-radius:10px;'
-                                   'background:#fafafa;display:flex;align-items:flex-start;padding:8px 10px">'
-                                   '<span style="font-size:11px;color:#ccc;font-weight:600">' + str(dn) + '</span></div>')
-                        st.markdown(day_html, unsafe_allow_html=True)
+                        # Day has NO data (⚪ determines neutral background style hook via aria-label)
+                        lbl = f"<span class='cal-day-num'>{dn}</span><span class='cal-pnl-val'>—</span> ⚪"
+                        
+                        if st.button(lbl, key=f'cal_{dk}', use_container_width=True, type=btn_type):
+                            st.session_state.selected_day = dk if not is_sel else None
+                            st.rerun()
 
     days_with_data = sorted(day_pnl_map.keys())
     st.markdown('</div>', unsafe_allow_html=True)
 
 with col_detail:
-    # Auto-select last day with data in current month if nothing selected
-    if days_with_data:
-        default_dk = f"{cal_year}-{str(cal_mon).zfill(2)}-{str(max(days_with_data)).zfill(2)}"
-        if st.session_state.selected_day is None or st.session_state.selected_day not in [f"{cal_year}-{str(cal_mon).zfill(2)}-{str(d).zfill(2)}" for d in days_with_data]:
-            st.session_state.selected_day = default_dk
+    # Set fallback selection to latest day with active trade data if nothing is picked
+    if days_with_data and st.session_state.selected_day is None:
+        st.session_state.selected_day = f"{cal_year}-{str(cal_mon).zfill(2)}-{str(max(days_with_data)).zfill(2)}"
 
     st.markdown('<div class="card"><div class="card-title">📋 Day Analysis</div>', unsafe_allow_html=True)
     if st.session_state.selected_day:
@@ -522,12 +542,11 @@ with col_detail:
                   </div>
                 </div>''', unsafe_allow_html=True)
         else:
-            st.info("No bets found for this date.")
-    else:
-        st.markdown('''<div style="text-align:center;padding:60px 20px;color:#ccc">
-          <div style="font-size:40px;margin-bottom:10px">📅</div>
-          <div style="font-size:13px;font-weight:500">Select a day from the calendar<br>to see a full breakdown</div>
-        </div>''', unsafe_allow_html=True)
+            st.markdown(f'''<div style="background:#f8f9fa;border-radius:8px;padding:14px;margin-bottom:10px;border:1px solid #eee">
+              <div style="font-size:11px;color:#aaa;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px">{sel_date.strftime('%A, %d %B %Y')}</div>
+              <div style="font-size:24px;font-weight:800;color:#a0aec0;margin-bottom:4px">£0.00</div>
+              <div style="font-size:12px;color:#a0aec0">No market settlements on this date.</div>
+            </div>''', unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
 
 st.markdown("<br>", unsafe_allow_html=True)
@@ -543,7 +562,6 @@ with r3c1:
     plotly_card("🏷️ P&L by Market Type", fig3, 270)
 
 with r3c2:
-    # normalize to midnight so Monday bets aren't excluded by time-of-day
     today=datetime.now().replace(hour=0,minute=0,second=0,microsecond=0)
     ws=today-timedelta(days=today.weekday())
     we=ws+timedelta(days=7)
