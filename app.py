@@ -493,4 +493,68 @@ with col_detail:
                 </div>
                 <div style="text-align:center;background:#111b29;border-radius:8px;padding:8px;border:1px solid #1a2a3e">
                   <div style="font-size:9px;color:#7e8e9f;font-weight:700;text-transform:uppercase">ROI</div>
-                  <div style="font-weight:800;font-size:18
+                  <div style="font-weight:800;font-size:18px;color:{dc}">{droi:+.1f}%</div>
+                </div>
+              </div>
+            </div>''', unsafe_allow_html=True)
+            for _, bet in ddf.iterrows():
+                pc  = "#2bf0a2" if bet['P/L']>=0 else "#ff5252"
+                bg  = "#0c251c" if bet['P/L']>=0 else "#2e1418"
+                brd = "#2bf0a2" if bet['P/L']>=0 else "#ff5252"
+                st.markdown(f'''<div style="background:{bg};border-left:3px solid {brd};border-radius:7px; padding:9px 11px;margin-bottom:6px">
+                  <div style="font-weight:700;font-size:12px;color:#f2f6fc">{bet["Event"]}</div>
+                  <div style="color:#7e8e9f;font-size:11px;margin-top:2px">{bet["Market"]} · {bet["Selection"]} · {bet["Type"]} @ {bet["Avg Odds"]:.2f}</div>
+                  <div style="display:flex;justify-content:space-between;margin-top:5px;align-items:center">
+                    <span style="font-size:11px;color:#526375">Liability: £{bet["Liability"]:.2f}</span>
+                    <span style="font-weight:800;font-size:13px;color:{pc}">{"+"if bet["P/L"]>=0 else ""}£{bet["P/L"]:.2f}</span>
+                  </div>
+                </div>''', unsafe_allow_html=True)
+        else:
+            st.markdown(f'''<div style="background:#0b121d;border-radius:8px;padding:14px;margin-bottom:10px;border:1px solid #1a2a3e">
+              <div style="font-size:11px;color:#7e8e9f;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px">{sel_date.strftime('%A, %d %B %Y')}</div>
+              <div style="font-size:24px;font-weight:800;color:#526375;margin-bottom:4px">£0.00</div>
+              <div style="font-size:12px;color:#526375">No market settlements on this date.</div>
+            </div>''', unsafe_allow_html=True)
+    st.markdown('</div>', unsafe_allow_html=True)
+
+st.markdown("<br>", unsafe_allow_html=True)
+
+# ── market + day of week ───────────────────────────────────────────────────────
+r3c1,r3c2=st.columns(2)
+with r3c1:
+    ms=filtered.groupby('Market').agg(PnL=('P/L','sum'),Bets=('BetID','count')).reset_index().sort_values('PnL')
+    fig3=go.Figure(go.Bar(x=ms['PnL'],y=ms['Market'],orientation='h', marker_color=['#2bf0a2' if v>=0 else '#ff5252' for v in ms['PnL']], hovertemplate='<b>%{y}</b><br>P&L: £%{x:.2f}<extra></extra>'))
+    fig3.update_layout(yaxis=dict(showgrid=False),xaxis=dict(tickprefix='£'), font=dict(color='#cbd5e1'))
+    plotly_card("🏷️ P&L by Market Type", fig3, 270)
+
+with r3c2:
+    today=datetime.now().replace(hour=0,minute=0,second=0,microsecond=0)
+    ws=today-timedelta(days=today.weekday())
+    we=ws+timedelta(days=7)
+    tw=filtered[(filtered['Date']>=ws)&(filtered['Date']<we)]
+    dow_order=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday']
+    if not tw.empty:
+        dp=tw.groupby('DayOfWeek')['P/L'].sum().reindex(dow_order).fillna(0)
+        wt=tw['P/L'].sum()
+        cap=f"Week {ws.strftime('%d %b')} – {(we-timedelta(days=1)).strftime('%d %b %Y')} · Total: {'+'if wt>=0 else ''}£{wt:.2f}"
+    else:
+        dp=filtered.groupby('DayOfWeek')['P/L'].sum().reindex(dow_order).fillna(0)
+        cap="No bets this week — showing all-time by day of week"
+    fig4=go.Figure(go.Bar(x=dp.index,y=dp.values, marker_color=['#2bf0a2' if v>=0 else '#ff5252' for v in dp.values], hovertemplate='%{x}<br>P&L: £%{y:.2f}<extra></extra>'))
+    fig4.add_hline(y=0,line_dash="dash",line_color="#1a2a3e",line_width=1)
+    fig4.update_layout(xaxis=dict(showgrid=False),yaxis=dict(tickprefix='£'), font=dict(color='#cbd5e1'))
+    plotly_card("📆 P&L by Day of Week — This Week", fig4, 260)
+    st.caption(cap)
+
+st.markdown("<br>", unsafe_allow_html=True)
+
+# ── all bets table ─────────────────────────────────────────────────────────────
+st.markdown('<div class="card"><div class="card-title">📋 All Bets</div>', unsafe_allow_html=True)
+tdf=filtered[['DateStr','Event','Market','Selection','Type','Avg Odds','Liability','P/L','ROI','Outcome']].copy()
+tdf=tdf.sort_values('DateStr',ascending=False)
+tdf['Liability']=tdf['Liability'].apply(lambda x:f"£{x:.2f}")
+tdf['P/L']=tdf['P/L'].apply(lambda x:f"+£{x:.2f}" if x>=0 else f"-£{abs(x):.2f}")
+tdf['ROI']=tdf['ROI'].apply(lambda x:f"{x:+.1f}%")
+tdf.columns=['Date','Event','Market','Selection','Type','Odds','Liability','P/L','ROI','Outcome']
+st.dataframe(tdf,use_container_width=True,hide_index=True)
+st.markdown('</div>', unsafe_allow_html=True)
