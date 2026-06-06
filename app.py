@@ -9,72 +9,84 @@ import plotly.graph_objects as go
 
 st.set_page_config(page_title="Betfair Trading Dashboard", page_icon="📈", layout="wide", initial_sidebar_state="expanded")
 
+# ── SMARKETS-INSPIRED DARK THEME STYLING ──
 st.markdown("""
 <style>
-  body { background:#f2f4f8; }
+  /* Main background */
+  .stApp { background-color: #121820 !important; color: #f8fafc !important; }
+  body { background-color: #121820; color: #f8fafc; }
 
+  /* Metric cards */
   .metric-card {
-    background:#fff;
-    border-radius:10px;
-    padding:12px 8px;
-    border:1px solid #e4e7ec;
-    box-shadow:0 1px 4px rgba(0,0,0,0.06);
-    height:84px;
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    align-items:center;
-    text-align:center;
+    background: #1e2632;
+    border-radius: 10px;
+    padding: 12px 8px;
+    border: 1px solid #2d3748;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+    height: 84px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
   }
-  .metric-label { font-size:10px; color:#999; font-weight:700; text-transform:uppercase; letter-spacing:0.5px; margin-bottom:4px; }
-  .metric-value { font-size:18px; font-weight:800; line-height:1.1; }
-  .metric-sub   { font-size:10px; color:#bbb; margin-top:3px; }
+  .metric-label { font-size: 10px; color: #94a3b8; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+  .metric-value { font-size: 18px; font-weight: 800; line-height: 1.1; }
+  .metric-sub   { font-size: 10px; color: #64748b; margin-top: 3px; }
 
+  /* Main dashboard container cards */
   .card {
-    background:#fff;
-    border-radius:12px;
-    padding:16px 18px 12px 18px;
-    border:1px solid #e4e7ec;
-    box-shadow:0 1px 6px rgba(0,0,0,0.07);
-    margin-bottom:18px;
+    background: #1e2632;
+    border-radius: 12px;
+    padding: 16px 18px 12px 18px;
+    border: 1px solid #2d3748;
+    box-shadow: 0 10px 15px -3px rgba(0,0,0,0.3);
+    margin-bottom: 18px;
   }
   .card-title {
-    font-size:11px;
-    font-weight:800;
-    color:#555;
-    text-transform:uppercase;
-    letter-spacing:0.6px;
-    margin-bottom:12px;
-    padding-bottom:8px;
-    border-bottom:1px solid #f0f0f0;
+    font-size: 11px;
+    font-weight: 800;
+    color: #cbd5e1;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    margin-bottom: 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #2d3748;
   }
 
-  .stat-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:8px; }
-  .stat-item { background:#f8f9fa; border-radius:8px; padding:10px 8px; text-align:center; }
-  .stat-item-label { font-size:10px; color:#999; font-weight:600; text-transform:uppercase; margin-bottom:3px; }
-  .stat-item-value { font-size:15px; font-weight:800; color:#1a1a2e; }
+  .stat-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 8px; }
+  .stat-item { background: #151c24; border-radius: 8px; padding: 10px 8px; text-align: center; border: 1px solid #2d3748; }
+  .stat-item-label { font-size: 10px; color: #94a3b8; font-weight: 600; text-transform: uppercase; margin-bottom: 3px; }
+  .stat-item-value { font-size: 15px; font-weight: 800; color: #f8fafc; }
 
-  .pos { color:#0F6E56; } .neg { color:#C0392B; } .neu { color:#1a1a2e; }
+  /* Performance Colors */
+  .pos { color: #00ffb3 !important; } 
+  .neg { color: #ff5252 !important; } 
+  .neu { color: #f8fafc !important; }
 
-  .bet-row { border-radius:7px; padding:8px 10px; margin-bottom:5px; font-size:12px; border-left:3px solid #ccc; }
-  .bet-row.win  { background:#f0faf5; border-left-color:#0F6E56; }
-  .bet-row.loss { background:#fdf0ee; border-left-color:#C0392B; }
+  /* Sidebar styling overrides */
+  section[data-testid="stSidebar"] { background: #0f141c !important; border-right: 1px solid #2d3748; }
+  section[data-testid="stSidebar"] * { color: #cbd5e1 !important; }
 
-  section[data-testid="stSidebar"] { background:#1a1a2e !important; }
-  section[data-testid="stSidebar"] * { color:#eee !important; }
+  /* Detailed breakdown row cards */
+  .bet-row { border-radius: 7px; padding: 8px 10px; margin-bottom: 5px; font-size: 12px; border-left: 3px solid #4a5568; }
+  .bet-row.win  { background: #162a24; border-left-color: #00ffb3; }
+  .bet-row.loss { background: #2d191e; border-left-color: #ff5252; }
 
-  /* ── UNIFORM CALENDAR BUTTON STYLING ── */
+  /* ── HOOKED CALENDAR GRID STYLE SYSTEM ── */
   button[aria-label*="🟢"], button[aria-label*="🔴"], button[aria-label*="⚪"] {
-    min-height:85px !important; 
-    height:85px !important;
-    border-radius:12px !important; 
-    padding:6px 10px !important; 
-    width:100% !important;
-    transition: transform 0.1s, box-shadow 0.1s !important;
-    border: 1.5px solid transparent !important;
+    min-height: 85px !important; 
+    height: 85px !important;
+    border-radius: 10px !important; 
+    padding: 6px 10px !important; 
+    width: 100% !important;
+    transition: transform 0.12s ease, box-shadow 0.12s ease !important;
+    position: relative !important;
+    display: block !important;
+    background: #151c24 !important;
   }
 
-  /* Target internal container for absolute positioning control */
+  /* Force internal formatting to align the text components reliably */
   button[aria-label*="🟢"] div[data-testid="stMarkdownContainer"] p,
   button[aria-label*="🔴"] div[data-testid="stMarkdownContainer"] p,
   button[aria-label*="⚪"] div[data-testid="stMarkdownContainer"] p {
@@ -84,84 +96,80 @@ st.markdown("""
     width: 100% !important;
     margin: 0 !important;
     padding: 0 !important;
-    text-align: center !important;
-    font-size: 14px !important;
-    font-weight: 800 !important;
-    line-height: 1.2 !important;
-    position: relative !important;
+    justify-content: center !important;
+    align-items: center !important;
   }
 
-  /* Force the first line (Day Number) to the top left corner */
-  button[aria-label*="🟢"] div[data-testid="stMarkdownContainer"] p::first-line,
-  button[aria-label*="🔴"] div[data-testid="stMarkdownContainer"] p::first-line,
-  button[aria-label*="⚪"] div[data-testid="stMarkdownContainer"] p::first-line {
+  /* Target Day Number segment and break it exclusively to top-left */
+  .cal-day-num {
     font-size: 11px !important;
     font-weight: 700 !important;
-    float: left !important;
-    display: block !important;
-    width: 100% !important;
-    text-align: left !important;
     position: absolute !important;
-    top: 0 !important;
-    left: 0 !important;
+    top: 6px !important;
+    left: 8px !important;
+    color: #94a3b8 !important;
+  }
+
+  /* Target center value element */
+  .cal-pnl-val {
+    font-size: 14px !important;
+    font-weight: 800 !important;
+    text-align: center !important;
+    margin-top: 10px !important;
+  }
+
+  /* Target emoji dot element at bottom center */
+  .cal-dot-icon {
+    font-size: 10px !important;
+    margin-top: 4px !important;
   }
 
   /* Green Days (Profit) */
   button[aria-label*="🟢"] {
-    background: linear-gradient(135deg, #d4f5e9, #a8ead0) !important;
-    border: 1.5px solid #5fcca8 !important; 
-    color: #0F6E56 !important;
-    box-shadow: 0 2px 6px rgba(95,204,168,0.25) !important;
+    border: 1.5px solid #00be85 !important;
+    color: #00ffb3 !important;
+    background: linear-gradient(135deg, #162a24, #101f1a) !important;
   }
+  button[aria-label*="🟢"] .cal-pnl-val { color: #00ffb3 !important; }
   button[aria-label*="🟢"]:hover {
     transform: translateY(-2px) !important;
-    box-shadow: 0 5px 12px rgba(95,204,168,0.4) !important;
+    box-shadow: 0 4px 12px rgba(0, 255, 179, 0.2) !important;
   }
 
   /* Red Days (Loss) */
   button[aria-label*="🔴"] {
-    background: linear-gradient(135deg, #fde8e4, #f9c4bb) !important;
-    border: 1.5px solid #e8836c !important; 
-    color: #C0392B !important;
-    box-shadow: 0 2px 6px rgba(232,131,108,0.25) !important;
+    border: 1.5px solid #d32f2f !important;
+    color: #ff5252 !important;
+    background: linear-gradient(135deg, #2d191e, #221216) !important;
   }
+  button[aria-label*="🔴"] .cal-pnl-val { color: #ff5252 !important; }
   button[aria-label*="🔴"]:hover {
     transform: translateY(-2px) !important;
-    box-shadow: 0 5px 12px rgba(232,131,108,0.4) !important;
+    box-shadow: 0 4px 12px rgba(255, 82, 82, 0.2) !important;
   }
 
-  /* White Days (Empty/No Trades) - High Contrast Dark Slate Text */
+  /* White Days (Empty/No Trades) */
   button[aria-label*="⚪"] {
-    background: linear-gradient(135deg, #ffffff, #f1f3f7) !important;
-    border: 1.5px solid #cbd5e1 !important; 
-    color: #475569 !important;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.02) !important;
+    border: 1.5px solid #2d3748 !important;
+    color: #64748b !important;
+    background: #151c24 !important;
   }
-  button[aria-label*="⚪"] div[data-testid="stMarkdownContainer"] p {
-    color: #475569 !important;
-  }
+  button[aria-label*="⚪"] .cal-pnl-val { color: #475569 !important; }
   button[aria-label*="⚪"]:hover {
     transform: translateY(-2px) !important;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.08) !important;
-    border-color: #94a3b8 !important;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.4) !important;
+    border-color: #4a5568 !important;
   }
 
-  /* Primary State Overrides (When Selected) */
-  button[aria-label*="🟢"][data-testid="baseButton-primary"] {
-    background: linear-gradient(135deg, #a8ead0, #5fcca8) !important;
-    border: 2px solid #0F6E56 !important;
-    outline: 2.5px solid #0F6E56 !important; outline-offset: 1px !important;
-  }
-  button[aria-label*="🔴"][data-testid="baseButton-primary"] {
-    background: linear-gradient(135deg, #f9c4bb, #e8836c) !important;
-    border: 2px solid #C0392B !important;
-    outline: 2.5px solid #C0392B !important; outline-offset: 1px !important;
-  }
+  /* ── UNIFIED SELECTION HIGHLIGHT (No conflicting solid colors) ── */
+  button[aria-label*="🟢"][data-testid="baseButton-primary"],
+  button[aria-label*="🔴"][data-testid="baseButton-primary"],
   button[aria-label*="⚪"][data-testid="baseButton-primary"] {
-    background: linear-gradient(135deg, #e2e8f0, #cbd5e1) !important;
-    border: 2px solid #475569 !important;
-    outline: 2.5px solid #475569 !important; outline-offset: 1px !important;
-    color: #1e293b !important;
+    border: 2px solid #ffb800 !important;
+    outline: 2px solid #ffb800 !important;
+    outline-offset: 1px !important;
+    box-shadow: 0 0 14px rgba(255, 184, 0, 0.4) !important;
+    transform: translateY(-1px) !important;
   }
 </style>
 """, unsafe_allow_html=True)
@@ -272,7 +280,7 @@ def compute_max_drawdown(pnl_series):
 
 def plotly_card(title, fig, height=270):
     st.markdown(f'<div class="card"><div class="card-title">{title}</div>', unsafe_allow_html=True)
-    fig.update_layout(height=height, margin=dict(l=0,r=0,t=4,b=0), plot_bgcolor='#ffffff', paper_bgcolor='#ffffff', xaxis=dict(showgrid=False,linecolor='#eee'), yaxis=dict(gridcolor='#f0f0f0',linecolor='#eee'))
+    fig.update_layout(height=height, margin=dict(l=0,r=0,t=4,b=0), plot_bgcolor='rgba(0,0,0,0)', paper_bgcolor='rgba(0,0,0,0)', font=dict(color='#cbd5e1'), xaxis=dict(showgrid=False,linecolor='#2d3748'), yaxis=dict(gridcolor='#2d3748',linecolor='#2d3748'))
     st.plotly_chart(fig, use_container_width=True)
     st.markdown('</div>', unsafe_allow_html=True)
 
@@ -280,7 +288,7 @@ def metric_card(col, label, value, cls="neu", sub=""):
     sub_html = f'<div class="metric-sub">{sub}</div>' if sub else ''
     col.markdown(f'<div class="metric-card"><div class="metric-label">{label}</div><div class="metric-value {cls}">{value}</div>{sub_html}</div>', unsafe_allow_html=True)
 
-def stat_item(label, value, color="#1a1a2e"):
+def stat_item(label, value, color="#f8fafc"):
     return f'<div class="stat-item"><div class="stat-item-label">{label}</div><div class="stat-item-value" style="color:{color}">{value}</div></div>'
 
 # ── sidebar ────────────────────────────────────────────────────────────────────
@@ -290,13 +298,13 @@ with st.sidebar:
     uploaded=st.file_uploader("Upload ExchangeBets_Settled.csv", type="csv")
     if uploaded:
         raw_df=pd.read_csv(uploaded)
-        st.success(f"✅ {len(raw_df)} rows loaded")
+        st.success(f" uploaded: {len(raw_df)} rows")
         if st.button("🔄 Sync to Google Sheets", use_container_width=True):
             with st.spinner("Syncing..."):
                 sheet=connect_sheets()
                 if sheet:
                     prc=process_csv(raw_df); added=sync_to_sheets(prc,sheet)
-                    st.success(f"✅ {added} new bets synced!")
+                    st.success(f" synced rows: {added}")
     st.markdown("---")
     st.markdown("### Filters")
     if uploaded:
@@ -371,32 +379,32 @@ ac1,ac2,ac3=st.columns(3)
 with ac1:
     st.markdown(f'''<div class="card"><div class="card-title">💰 Profitability Metrics</div>
       <div class="stat-grid">
-        {stat_item("Largest Win",   f"+£{largest_win:.2f}",  "#0F6E56")}
-        {stat_item("Largest Loss",  f"£{largest_loss:.2f}",  "#C0392B")}
-        {stat_item("Profit Factor", f"{profit_factor:.2f}",  "#0F6E56" if profit_factor>=1 else "#C0392B")}
-        {stat_item("EV per Bet",    f"£{ev_per_bet:+.2f}",   "#0F6E56" if ev_per_bet>=0 else "#C0392B")}
+        {stat_item("Largest Win",   f"+£{largest_win:.2f}",  "#00ffb3")}
+        {stat_item("Largest Loss",  f"£{largest_loss:.2f}",  "#ff5252")}
+        {stat_item("Profit Factor", f"{profit_factor:.2f}",  "#00ffb3" if profit_factor>=1 else "#ff5252")}
+        {stat_item("EV per Bet",    f"£{ev_per_bet:+.2f}",   "#00ffb3" if ev_per_bet>=0 else "#ff5252")}
         {stat_item("Avg Odds",      f"{avg_odds:.2f}")}
         {stat_item("Total Bets",    str(total_bets))}
       </div></div>''',unsafe_allow_html=True)
 with ac2:
     st.markdown(f'''<div class="card"><div class="card-title">📉 Risk Metrics</div>
       <div class="stat-grid">
-        {stat_item("Max Drawdown",  f"£{max_dd:.2f}",        "#C0392B" if max_dd<0 else "#0F6E56")}
+        {stat_item("Max Drawdown",  f"£{max_dd:.2f}",        "#ff5252" if max_dd<0 else "#00ffb3")}
         {stat_item("Std Dev P/L",   f"£{std_pnl:.2f}")}
         {stat_item("Avg Liability", f"£{avg_liab:.2f}")}
-        {stat_item("Win Streak",    str(max_win_streak),     "#0F6E56")}
-        {stat_item("Loss Streak",   str(max_loss_streak),    "#C0392B")}
+        {stat_item("Win Streak",    str(max_win_streak),     "#00ffb3")}
+        {stat_item("Loss Streak",   str(max_loss_streak),    "#ff5252")}
         {stat_item("Profit Days",   f"{profit_days}/{total_days}")}
       </div></div>''',unsafe_allow_html=True)
 with ac3:
     st.markdown(f'''<div class="card"><div class="card-title">🎯 Win/Loss Breakdown</div>
       <div class="stat-grid">
-        {stat_item("Avg Win",     f"+£{avg_win:.2f}",  "#0F6E56")}
-        {stat_item("Avg Loss",    f"£{avg_loss:.2f}",  "#C0392B")}
-        {stat_item("W/L Ratio",   f"{wl_ratio:.2f}",   "#0F6E56" if wl_ratio>=1 else "#C0392B")}
-        {stat_item("Strike Rate", f"{strike_rate:.1f}%","#0F6E56" if strike_rate>=50 else "#C0392B")}
-        {stat_item("Total Won",   f"+£{total_won:.2f}", "#0F6E56")}
-        {stat_item("Total Lost",  f"-£{total_lost:.2f}","#C0392B")}
+        {stat_item("Avg Win",     f"+£{avg_win:.2f}",  "#00ffb3")}
+        {stat_item("Avg Loss",    f"£{avg_loss:.2f}",  "#ff5252")}
+        {stat_item("W/L Ratio",   f"{wl_ratio:.2f}",   "#00ffb3" if wl_ratio>=1 else "#ff5252")}
+        {stat_item("Strike Rate", f"{strike_rate:.1f}%","#00ffb3" if strike_rate>=50 else "#ff5252")}
+        {stat_item("Total Won",   f"+£{total_won:.2f}", "#00ffb3")}
+        {stat_item("Total Lost",  f"-£{total_lost:.2f}","#ff5252")}
       </div></div>''',unsafe_allow_html=True)
 
 st.markdown("<br>", unsafe_allow_html=True)
@@ -407,16 +415,16 @@ with r1c1:
     cum=filtered.groupby('DateKey')['P/L'].sum().reset_index().sort_values('DateKey')
     cum['Cumulative']=cum['P/L'].cumsum(); cum['Date']=pd.to_datetime(cum['DateKey'])
     fig=go.Figure()
-    fig.add_trace(go.Scatter(x=cum['Date'],y=cum['Cumulative'],fill='tozeroy', line=dict(color='#1D9E75' if total_pnl>=0 else '#D85A30',width=2.5), fillcolor='rgba(29,158,117,0.12)' if total_pnl>=0 else 'rgba(216,90,48,0.12)', hovertemplate='%{x|%d %b}<br>Cumulative: £%{y:.2f}<extra></extra>'))
-    fig.add_hline(y=0,line_dash="dash",line_color="#ddd",line_width=1)
+    fig.add_trace(go.Scatter(x=cum['Date'],y=cum['Cumulative'],fill='tozeroy', line=dict(color='#00ffb3' if total_pnl>=0 else '#ff5252',width=2.5), fillcolor='rgba(0,255,179,0.08)' if total_pnl>=0 else 'rgba(255,82,82,0.08)', hovertemplate='%{x|%d %b}<br>Cumulative: £%{y:.2f}<extra></extra>'))
+    fig.add_hline(y=0,line_dash="dash",line_color="#2d3748",line_width=1)
     fig.update_layout(yaxis=dict(tickprefix='£'))
     plotly_card("📉 Cumulative P&L", fig, 260)
 with r1c2:
     risk=pd.DataFrame({'Date':dliab.index,'Liability':dliab.values,'PnL':dpnl.reindex(dliab.index).values})
     fig2=go.Figure()
-    fig2.add_trace(go.Bar(x=risk['Date'],y=risk['Liability'],name='Daily Liability', marker_color='rgba(100,140,255,0.25)',hovertemplate='%{x}<br>Liability: £%{y:.2f}<extra></extra>'))
-    fig2.add_trace(go.Scatter(x=risk['Date'],y=risk['PnL'],name='Daily P/L',mode='lines+markers', line=dict(color='#1D9E75',width=2), marker=dict(color=['#1D9E75' if v>=0 else '#D85A30' for v in risk['PnL']],size=7), hovertemplate='%{x}<br>P&L: £%{y:.2f}<extra></extra>'))
-    fig2.add_hline(y=0,line_dash="dash",line_color="#ddd",line_width=1)
+    fig2.add_trace(go.Bar(x=risk['Date'],y=risk['Liability'],name='Daily Liability', marker_color='rgba(100,140,255,0.15)',hovertemplate='%{x}<br>Liability: £%{y:.2f}<extra></extra>'))
+    fig2.add_trace(go.Scatter(x=risk['Date'],y=risk['PnL'],name='Daily P/L',mode='lines+markers', line=dict(color='#00ffb3',width=2), marker=dict(color=['#00ffb3' if v>=0 else '#ff5252' for v in risk['PnL']],size=7), hovertemplate='%{x}<br>P&L: £%{y:.2f}<extra></extra>'))
+    fig2.add_hline(y=0,line_dash="dash",line_color="#2d3748",line_width=1)
     fig2.update_layout(yaxis=dict(tickprefix='£'), legend=dict(orientation='h',yanchor='bottom',y=1.02,xanchor='right',x=1))
     plotly_card("⚖️ Daily Risk vs Return", fig2, 260)
 
@@ -439,7 +447,7 @@ with col_cal:
     first_dow     = calendar.monthrange(cal_year, cal_mon)[0]
     days_in_month = calendar.monthrange(cal_year, cal_mon)[1]
 
-    st.markdown('<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:6px">' + ''.join([f'<div style="text-align:center;font-size:10px;font-weight:700;color:#bbb;text-transform:uppercase;padding:2px 0">{d}</div>' for d in ['Mon','Tue','Wed','Thu','Fri','Sat','Sun']]) + '</div>', unsafe_allow_html=True)
+    st.markdown('<div style="display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:6px">' + ''.join([f'<div style="text-align:center;font-size:10px;font-weight:700;color:#64748b;text-transform:uppercase;padding:2px 0">{d}</div>' for d in ['Mon','Tue','Wed','Thu','Fri','Sat','Sun']]) + '</div>', unsafe_allow_html=True)
 
     all_days = [None] * first_dow + list(range(1, days_in_month+1))
     while len(all_days) % 7 != 0:
@@ -462,13 +470,15 @@ with col_cal:
                         dot = '🟢' if pnl >= 0 else '🔴'
                         sign = '+' if pnl >= 0 else '-'
                         formatted_pnl = f"{sign}£{int(abs(pnl))}"
-                        lbl = f"{dn}    \n\n{formatted_pnl}\n\n{dot}"
+                        
+                        # Labels structured to isolate classes for structural layout sizing
+                        lbl = f"<span class='cal-day-num'>{dn}</span><span class='cal-pnl-val'>{formatted_pnl}</span><span class='cal-dot-icon'>{dot}</span>"
                         
                         if st.button(lbl, key=f'cal_{dk}', use_container_width=True, type=btn_type):
                             st.session_state.selected_day = dk if not is_sel else None
                             st.rerun()
                     else:
-                        lbl = f"{dn}    \n\n—\n\n⚪"
+                        lbl = f"<span class='cal-day-num'>{dn}</span><span class='cal-pnl-val'>—</span><span class='cal-dot-icon'>⚪</span>"
                         
                         if st.button(lbl, key=f'cal_{dk}', use_container_width=True, type=btn_type):
                             st.session_state.selected_day = dk if not is_sel else None
@@ -490,42 +500,42 @@ with col_detail:
             dt=ddf['P/L'].sum(); dl=ddf['Liability'].sum()
             dw=(ddf['Outcome']=='WIN').sum(); db=len(ddf)
             droi=(dt/dl*100) if dl>0 else 0
-            dc="#0F6E56" if dt>=0 else "#C0392B"
-            st.markdown(f'''<div style="background:#f8f9fa;border-radius:8px;padding:14px;margin-bottom:10px;border:1px solid #eee">
-              <div style="font-size:11px;color:#aaa;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px">{sel_date.strftime('%A, %d %B %Y')}</div>
+            dc="#00ffb3" if dt>=0 else "#ff5252"
+            st.markdown(f'''<div style="background:#151c24;border-radius:8px;padding:14px;margin-bottom:10px;border:1px solid #2d3748">
+              <div style="font-size:11px;color:#94a3b8;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px">{sel_date.strftime('%A, %d %B %Y')}</div>
               <div style="font-size:28px;font-weight:800;color:{dc};margin-bottom:10px">{'+'if dt>=0 else ''}£{dt:.2f}</div>
               <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:8px">
-                <div style="text-align:center;background:#fff;border-radius:8px;padding:8px;border:1px solid #eee">
-                  <div style="font-size:9px;color:#aaa;font-weight:700;text-transform:uppercase">Bets</div>
-                  <div style="font-weight:800;font-size:18px;color:#222">{db}</div>
+                <div style="text-align:center;background:#1e2632;border-radius:8px;padding:8px;border:1px solid #2d3748">
+                  <div style="font-size:9px;color:#94a3b8;font-weight:700;text-transform:uppercase">Bets</div>
+                  <div style="font-weight:800;font-size:18px;color:#f8fafc">{db}</div>
                 </div>
-                <div style="text-align:center;background:#fff;border-radius:8px;padding:8px;border:1px solid #eee">
-                  <div style="font-size:9px;color:#aaa;font-weight:700;text-transform:uppercase">Wins</div>
-                  <div style="font-weight:800;font-size:18px;color:#222">{dw}/{db}</div>
+                <div style="text-align:center;background:#1e2632;border-radius:8px;padding:8px;border:1px solid #2d3748">
+                  <div style="font-size:9px;color:#94a3b8;font-weight:700;text-transform:uppercase">Wins</div>
+                  <div style="font-weight:800;font-size:18px;color:#f8fafc">{dw}/{db}</div>
                 </div>
-                <div style="text-align:center;background:#fff;border-radius:8px;padding:8px;border:1px solid #eee">
-                  <div style="font-size:9px;color:#aaa;font-weight:700;text-transform:uppercase">ROI</div>
+                <div style="text-align:center;background:#1e2632;border-radius:8px;padding:8px;border:1px solid #2d3748">
+                  <div style="font-size:9px;color:#94a3b8;font-weight:700;text-transform:uppercase">ROI</div>
                   <div style="font-weight:800;font-size:18px;color:{dc}">{droi:+.1f}%</div>
                 </div>
               </div>
             </div>''', unsafe_allow_html=True)
             for _, bet in ddf.iterrows():
-                pc  = "#0F6E56" if bet['P/L']>=0 else "#C0392B"
-                bg  = "#f0faf5" if bet['P/L']>=0 else "#fdf0ee"
-                brd = "#0F6E56" if bet['P/L']>=0 else "#C0392B"
+                pc  = "#00ffb3" if bet['P/L']>=0 else "#ff5252"
+                bg  = "#162a24" if bet['P/L']>=0 else "#2d191e"
+                brd = "#00ffb3" if bet['P/L']>=0 else "#ff5252"
                 st.markdown(f'''<div style="background:{bg};border-left:3px solid {brd};border-radius:7px; padding:9px 11px;margin-bottom:6px">
-                  <div style="font-weight:700;font-size:12px;color:#222">{bet["Event"]}</div>
-                  <div style="color:#888;font-size:11px;margin-top:2px">{bet["Market"]} · {bet["Selection"]} · {bet["Type"]} @ {bet["Avg Odds"]:.2f}</div>
+                  <div style="font-weight:700;font-size:12px;color:#f8fafc">{bet["Event"]}</div>
+                  <div style="color:#94a3b8;font-size:11px;margin-top:2px">{bet["Market"]} · {bet["Selection"]} · {bet["Type"]} @ {bet["Avg Odds"]:.2f}</div>
                   <div style="display:flex;justify-content:space-between;margin-top:5px;align-items:center">
-                    <span style="font-size:11px;color:#bbb">Liability: £{bet["Liability"]:.2f}</span>
+                    <span style="font-size:11px;color:#64748b">Liability: £{bet["Liability"]:.2f}</span>
                     <span style="font-weight:800;font-size:13px;color:{pc}">{"+"if bet["P/L"]>=0 else ""}£{bet["P/L"]:.2f}</span>
                   </div>
                 </div>''', unsafe_allow_html=True)
         else:
-            st.markdown(f'''<div style="background:#f8f9fa;border-radius:8px;padding:14px;margin-bottom:10px;border:1px solid #eee">
-              <div style="font-size:11px;color:#aaa;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px">{sel_date.strftime('%A, %d %B %Y')}</div>
-              <div style="font-size:24px;font-weight:800;color:#a0aec0;margin-bottom:4px">£0.00</div>
-              <div style="font-size:12px;color:#a0aec0">No market settlements on this date.</div>
+            st.markdown(f'''<div style="background:#151c24;border-radius:8px;padding:14px;margin-bottom:10px;border:1px solid #2d3748">
+              <div style="font-size:11px;color:#94a3b8;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;margin-bottom:4px">{sel_date.strftime('%A, %d %B %Y')}</div>
+              <div style="font-size:24px;font-weight:800;color:#64748b;margin-bottom:4px">£0.00</div>
+              <div style="font-size:12px;color:#64748b">No market settlements on this date.</div>
             </div>''', unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
 
@@ -535,8 +545,8 @@ st.markdown("<br>", unsafe_allow_html=True)
 r3c1,r3c2=st.columns(2)
 with r3c1:
     ms=filtered.groupby('Market').agg(PnL=('P/L','sum'),Bets=('BetID','count')).reset_index().sort_values('PnL')
-    fig3=go.Figure(go.Bar(x=ms['PnL'],y=ms['Market'],orientation='h', marker_color=['#1D9E75' if v>=0 else '#D85A30' for v in ms['PnL']], hovertemplate='<b>%{y}</b><br>P&L: £%{x:.2f}<extra></extra>'))
-    fig3.update_layout(yaxis=dict(showgrid=False),xaxis=dict(tickprefix='£'))
+    fig3=go.Figure(go.Bar(x=ms['PnL'],y=ms['Market'],orientation='h', marker_color=['#00ffb3' if v>=0 else '#ff5252' for v in ms['PnL']], hovertemplate='<b>%{y}</b><br>P&L: £%{x:.2f}<extra></extra>'))
+    fig3.update_layout(yaxis=dict(showgrid=False),xaxis=dict(tickprefix='£'), font=dict(color='#cbd5e1'))
     plotly_card("🏷️ P&L by Market Type", fig3, 270)
 
 with r3c2:
@@ -552,9 +562,9 @@ with r3c2:
     else:
         dp=filtered.groupby('DayOfWeek')['P/L'].sum().reindex(dow_order).fillna(0)
         cap="No bets this week — showing all-time by day of week"
-    fig4=go.Figure(go.Bar(x=dp.index,y=dp.values, marker_color=['#1D9E75' if v>=0 else '#D85A30' for v in dp.values], hovertemplate='%{x}<br>P&L: £%{y:.2f}<extra></extra>'))
-    fig4.add_hline(y=0,line_dash="dash",line_color="#ddd",line_width=1)
-    fig4.update_layout(xaxis=dict(showgrid=False),yaxis=dict(tickprefix='£'))
+    fig4=go.Figure(go.Bar(x=dp.index,y=dp.values, marker_color=['#00ffb3' if v>=0 else '#ff5252' for v in dp.values], hovertemplate='%{x}<br>P&L: £%{y:.2f}<extra></extra>'))
+    fig4.add_hline(y=0,line_dash="dash",line_color="#2d3748",line_width=1)
+    fig4.update_layout(xaxis=dict(showgrid=False),yaxis=dict(tickprefix='£'), font=dict(color='#cbd5e1'))
     plotly_card("📆 P&L by Day of Week — This Week", fig4, 260)
     st.caption(cap)
 
