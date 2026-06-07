@@ -70,121 +70,78 @@ st.markdown("""
   .bet-row.win  { background: #0c251c; border-left-color: #2bf0a2; }
   .bet-row.loss { background: #2e1418; border-left-color: #ff5252; }
 
-  /* ── IMMUTABLE ANCHORED GRID CSS SYSTEM ── */
+  /* ── CALENDAR GRID ── */
+  /* All calendar day buttons — consistent gray base */
   div[data-testid="stHorizontalBlock"] button {
     min-height: 85px !important;
     height: 85px !important;
     border-radius: 8px !important;
-    padding: 6px 10px !important;
+    padding: 8px 10px !important;
     width: 100% !important;
-    display: block !important;
-  }
-
-  /* Structural paragraphs child element override rules */
-  div[data-testid="stHorizontalBlock"] button div[data-testid="stMarkdownContainer"] p {
-    display: flex !important;
-    flex-direction: column !important;
-    height: 100% !important;
-    width: 100% !important;
-    margin: 0 !important;
-    padding: 0 !important;
-    text-align: center !important;
-    font-size: 14px !important;
-    font-weight: 800 !important;
-    line-height: 1.3 !important;
-  }
-
-  /* Lock first text item baseline to the top left margin zone */
-  div[data-testid="stHorizontalBlock"] button div[data-testid="stMarkdownContainer"] p::first-line {
-    font-size: 11px !important;
-    font-weight: 700 !important;
-    color: #62778e !important;
-    float: left !important;
-    text-align: left !important;
-    display: block !important;
-    width: 100% !important;
-  }
-
-  /* Deep Anchor Profit Days Background (🟢) */
-  div[data-testid="stHorizontalBlock"] button[aria-label*="🟢"] {
-    background-color: #0c251c !important;
-    background: linear-gradient(135deg, #0f291f, #07140f) !important;
-    border: 1.5px solid #1ba872 !important;
-    color: #2bf0a2 !important;
-  }
-  div[data-testid="stHorizontalBlock"] button[aria-label*="🟢"]:hover {
-    transform: translateY(-2px) !important;
-    box-shadow: 0 4px 12px rgba(43, 240, 162, 0.3) !important;
-  }
-
-  /* Deep Anchor Loss Days Background (🔴) */
-  div[data-testid="stHorizontalBlock"] button[aria-label*="🔴"] {
-    background-color: #2e1418 !important;
-    background: linear-gradient(135deg, #2a1216, #16080a) !important;
-    border: 1.5px solid #cc3341 !important;
-    color: #ff5252 !important;
-  }
-  div[data-testid="stHorizontalBlock"] button[aria-label*="🔴"]:hover {
-    transform: translateY(-2px) !important;
-    box-shadow: 0 4px 12px rgba(255, 82, 82, 0.3) !important;
-  }
-
-  /* Deep Anchor Idle Marketplace Background (⚪) */
-  div[data-testid="stHorizontalBlock"] button[aria-label*="⚪"] {
-    background-color: #0b121d !important;
-    background: #0b121d !important;
-    border: 1.5px solid #1a2a3e !important;
-    color: #3b4e63 !important;
-  }
-  div[data-testid="stHorizontalBlock"] button[aria-label*="⚪"]:hover {
-    transform: translateY(-2px) !important;
-    border-color: #2d435f !important;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5) !important;
-  }
-
-  /* Absolute Primary Selection Framing System */
-  div[data-testid="stHorizontalBlock"] button[data-testid="baseButton-primary"] {
-    border: 2px solid #ffb800 !important;
-    outline: 2px solid #ffb800 !important;
-    outline-offset: 1px !important;
-    box-shadow: 0 0 14px rgba(255, 184, 0, 0.6) !important;
-    transform: translateY(-1px) !important;
-  }
-
-  /* Fix: primary button keeps its color background (not Streamlit red) */
-  div[data-testid="stHorizontalBlock"] button[data-testid="baseButton-primary"][aria-label*="🟢"] {
-    background: linear-gradient(135deg, #0f2920, #0a1c14) !important;
-    color: #2bf0a2 !important;
-  }
-  div[data-testid="stHorizontalBlock"] button[data-testid="baseButton-primary"][aria-label*="🔴"] {
-    background: linear-gradient(135deg, #2e1216, #1a080a) !important;
-    color: #ff5252 !important;
-  }
-  div[data-testid="stHorizontalBlock"] button[data-testid="baseButton-primary"][aria-label*="⚪"] {
-    background: #0b121d !important;
-    color: #3b4e63 !important;
-  }
-
-  /* Fix: ensure text inside calendar buttons is always readable */
-  div[data-testid="stHorizontalBlock"] button[aria-label*="🟢"] p { color: #2bf0a2 !important; }
-  div[data-testid="stHorizontalBlock"] button[aria-label*="🔴"] p { color: #ff5252 !important; }
-  div[data-testid="stHorizontalBlock"] button[aria-label*="⚪"] p { color: #3b4e63 !important; }
-
-  /* Fix: button layout — day number top-left, P&L centre */
-  div[data-testid="stHorizontalBlock"] button {
+    overflow: hidden !important;
     display: flex !important;
     flex-direction: column !important;
     align-items: flex-start !important;
     justify-content: flex-start !important;
     text-align: left !important;
-    white-space: pre-line !important;
-    line-height: 1.5 !important;
+    background: #1c2535 !important;
+    border: 1px solid #2a3a52 !important;
+    color: #5a6e84 !important;
   }
   div[data-testid="stHorizontalBlock"] button p {
     text-align: left !important;
     white-space: pre-line !important;
     line-height: 1.5 !important;
     margin: 0 !important;
+    color: inherit !important;
+    font-size: 13px !important;
+    font-weight: 700 !important;
+  }
+
+  /* Profit days — green border + green text */
+  div[data-testid="stHorizontalBlock"] button[aria-label$="🟢"] {
+    background: #162a1f !important;
+    border: 1.5px solid #2bf0a2 !important;
+    color: #2bf0a2 !important;
+  }
+  div[data-testid="stHorizontalBlock"] button[aria-label$="🟢"]:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 14px rgba(43,240,162,0.25) !important;
+  }
+  div[data-testid="stHorizontalBlock"] button[aria-label$="🟢"] p {
+    color: #2bf0a2 !important;
+  }
+
+  /* Loss days — red border + red text */
+  div[data-testid="stHorizontalBlock"] button[aria-label$="🔴"] {
+    background: #2a1518 !important;
+    border: 1.5px solid #ff5252 !important;
+    color: #ff5252 !important;
+  }
+  div[data-testid="stHorizontalBlock"] button[aria-label$="🔴"]:hover {
+    transform: translateY(-2px) !important;
+    box-shadow: 0 4px 14px rgba(255,82,82,0.25) !important;
+  }
+  div[data-testid="stHorizontalBlock"] button[aria-label$="🔴"] p {
+    color: #ff5252 !important;
+  }
+
+  /* Selected day — gold outline, keep color */
+  div[data-testid="stHorizontalBlock"] button[data-testid="baseButton-primary"] {
+    outline: 2.5px solid #ffb800 !important;
+    outline-offset: 2px !important;
+    box-shadow: 0 0 14px rgba(255,184,0,0.5) !important;
+    transform: translateY(-1px) !important;
+  }
+  div[data-testid="stHorizontalBlock"] button[data-testid="baseButton-primary"][aria-label$="🟢"] {
+    background: #162a1f !important;
+    border: 1.5px solid #2bf0a2 !important;
+    color: #2bf0a2 !important;
+  }
+  div[data-testid="stHorizontalBlock"] button[data-testid="baseButton-primary"][aria-label$="🔴"] {
+    background: #2a1518 !important;
+    border: 1.5px solid #ff5252 !important;
+    color: #ff5252 !important;
   }
 </style>
 """, unsafe_allow_html=True)
@@ -486,13 +443,13 @@ with col_cal:
                         sign = '+' if pnl >= 0 else '-'
                         formatted_pnl = f"{sign}£{int(abs(pnl))}"
                         
-                        lbl = f"{dn}\n\n{formatted_pnl}\n\n{dot}"
+                        lbl = str(dn) + "\n" + formatted_pnl + "\n" + dot
                         
                         if st.button(lbl, key=f'cal_{dk}', use_container_width=True, type=btn_type):
                             st.session_state.selected_day = dk if not is_sel else None
                             st.rerun()
                     else:
-                        lbl = f"{dn}\n\n—\n\n⚪"
+                        lbl = str(dn)
                         
                         if st.button(lbl, key=f'cal_{dk}', use_container_width=True, type=btn_type):
                             st.session_state.selected_day = dk if not is_sel else None
