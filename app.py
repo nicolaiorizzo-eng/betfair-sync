@@ -70,31 +70,39 @@ st.markdown("""
   .bet-row.win  { background: #0c251c; border-left-color: #2bf0a2; }
   .bet-row.loss { background: #2e1418; border-left-color: #ff5252; }
 
-  /* ── CALENDAR GRID CSS ── */
+  /* ── IMMUTABLE ANCHORED GRID CSS SYSTEM ── */
   div[data-testid="stHorizontalBlock"] button {
     min-height: 85px !important;
     height: 85px !important;
     border-radius: 8px !important;
     padding: 6px 10px !important;
     width: 100% !important;
-    display: flex !important;
-    flex-direction: column !important;
-    align-items: flex-start !important;
-    justify-content: flex-start !important;
-    white-space: pre-line !important;
-    line-height: 1.4 !important;
-    text-align: left !important;
+    display: block !important;
   }
 
-  /* All calendar button text — ensure readable on dark bg */
-  div[data-testid="stHorizontalBlock"] button p,
-  div[data-testid="stHorizontalBlock"] button span {
-    text-align: left !important;
-    font-size: 12px !important;
+  /* Structural paragraphs child element override rules */
+  div[data-testid="stHorizontalBlock"] button div[data-testid="stMarkdownContainer"] p {
+    display: flex !important;
+    flex-direction: column !important;
+    height: 100% !important;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    text-align: center !important;
+    font-size: 14px !important;
+    font-weight: 800 !important;
+    line-height: 1.3 !important;
+  }
+
+  /* Lock first text item baseline to the top left margin zone */
+  div[data-testid="stHorizontalBlock"] button div[data-testid="stMarkdownContainer"] p::first-line {
+    font-size: 11px !important;
     font-weight: 700 !important;
-    line-height: 1.4 !important;
-    white-space: pre-line !important;
-    color: inherit !important;
+    color: #62778e !important;
+    float: left !important;
+    text-align: left !important;
+    display: block !important;
+    width: 100% !important;
   }
 
   /* Deep Anchor Profit Days Background (🟢) */
@@ -141,6 +149,42 @@ st.markdown("""
     outline-offset: 1px !important;
     box-shadow: 0 0 14px rgba(255, 184, 0, 0.6) !important;
     transform: translateY(-1px) !important;
+  }
+
+  /* Fix: primary button keeps its color background (not Streamlit red) */
+  div[data-testid="stHorizontalBlock"] button[data-testid="baseButton-primary"][aria-label*="🟢"] {
+    background: linear-gradient(135deg, #0f2920, #0a1c14) !important;
+    color: #2bf0a2 !important;
+  }
+  div[data-testid="stHorizontalBlock"] button[data-testid="baseButton-primary"][aria-label*="🔴"] {
+    background: linear-gradient(135deg, #2e1216, #1a080a) !important;
+    color: #ff5252 !important;
+  }
+  div[data-testid="stHorizontalBlock"] button[data-testid="baseButton-primary"][aria-label*="⚪"] {
+    background: #0b121d !important;
+    color: #3b4e63 !important;
+  }
+
+  /* Fix: ensure text inside calendar buttons is always readable */
+  div[data-testid="stHorizontalBlock"] button[aria-label*="🟢"] p { color: #2bf0a2 !important; }
+  div[data-testid="stHorizontalBlock"] button[aria-label*="🔴"] p { color: #ff5252 !important; }
+  div[data-testid="stHorizontalBlock"] button[aria-label*="⚪"] p { color: #3b4e63 !important; }
+
+  /* Fix: button layout — day number top-left, P&L centre */
+  div[data-testid="stHorizontalBlock"] button {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    justify-content: flex-start !important;
+    text-align: left !important;
+    white-space: pre-line !important;
+    line-height: 1.5 !important;
+  }
+  div[data-testid="stHorizontalBlock"] button p {
+    text-align: left !important;
+    white-space: pre-line !important;
+    line-height: 1.5 !important;
+    margin: 0 !important;
   }
 </style>
 """, unsafe_allow_html=True)
@@ -442,13 +486,13 @@ with col_cal:
                         sign = '+' if pnl >= 0 else '-'
                         formatted_pnl = f"{sign}£{int(abs(pnl))}"
                         
-                        lbl = f"{dn}\n{formatted_pnl}\n{dot}"
+                        lbl = f"{dn}\n\n{formatted_pnl}\n\n{dot}"
                         
                         if st.button(lbl, key=f'cal_{dk}', use_container_width=True, type=btn_type):
                             st.session_state.selected_day = dk if not is_sel else None
                             st.rerun()
                     else:
-                        lbl = f"{dn}"
+                        lbl = f"{dn}\n\n—\n\n⚪"
                         
                         if st.button(lbl, key=f'cal_{dk}', use_container_width=True, type=btn_type):
                             st.session_state.selected_day = dk if not is_sel else None
